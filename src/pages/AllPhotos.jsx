@@ -1,5 +1,19 @@
+import { useMemo } from "react";
+import { useSearch } from "../components/SearchContext";
+
 export default function AllPhotos() {
-  const items = Array.from({ length: 20 });
+  const { search } = useSearch();
+
+  const photos = Array.from({ length: 60 }, (_, i) => ({
+    id: i + 1,
+    name: `Photo ${i + 1}`
+  }));
+
+  const filtered = useMemo(() => {
+    return photos.filter((p) =>
+      p.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]);
 
   return (
     <div
@@ -12,29 +26,34 @@ export default function AllPhotos() {
         color: "#fff"
       }}
     >
-      <h2 style={{ marginBottom: 15 }}>📷 All Photos</h2>
+      <h2>📷 All Photos ({filtered.length})</h2>
 
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3,1fr)",
-          gap: 8
+          gap: 8,
+          marginTop: 15
         }}
       >
-        {items.map((_, i) => (
+        {filtered.map((item) => (
           <div
-            key={i}
+            key={item.id}
             style={{
               aspectRatio: "1",
               borderRadius: 12,
               background: "linear-gradient(135deg,#2f80ed,#56ccf2)",
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
-              fontSize: 28
+              justifyContent: "center",
+              flexDirection: "column",
+              fontSize: 24
             }}
           >
             🖼️
+            <small style={{fontSize:10}}>
+              {item.name}
+            </small>
           </div>
         ))}
       </div>
